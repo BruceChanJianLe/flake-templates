@@ -13,7 +13,7 @@
       });
     in
   {
-    devShells = forAllSystems ( { pkgs }: {
+    devShells = forEachSystem ( { pkgs }: {
         default = pkgs.mkShellNoCC {
           packages = with pkgs; [
             neofetch
