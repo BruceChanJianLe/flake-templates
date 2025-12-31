@@ -11,6 +11,10 @@
         path = ./shell;
         description = "Common packages you need all from nixpkgs";
       };
+      cpp_env = {
+        path = ./cpp_env;
+        description = "Provide a cpp development environment for local project.";
+      };
     };
     defaultTemplate = self.templates.shell;
     };
