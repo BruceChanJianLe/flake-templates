@@ -13,38 +13,28 @@
       });
     in
     {
-      devShells = forAllSystems ({ pkgs }:
-        let
-          ccache-gcc = pkgs.writeShellScriptBin "gcc" ''
-            exec ${pkgs.ccache}/bin/ccache ${pkgs.gcc}/bin/gcc "$@"
-          '';
-          ccache-gxx = pkgs.writeShellScriptBin "g++" ''
-            exec ${pkgs.ccache}/bin/ccache ${pkgs.gcc}/bin/g++ "$@"
-          '';
-        in
-        {
-          default = pkgs.mkShell {
-            buildInputs = [
-              ccache-gcc
-              ccache-gxx
-              pkgs.cmake
-              pkgs.llvmPackages.clang
-              pkgs.gdb
-              pkgs.ccache
-            ];
+      devShells = forAllSystems ({ pkgs }: {
+        default = pkgs.mkShell {
+          buildInputs = [
+            pkgs.gcc
+            pkgs.cmake
+            pkgs.llvmPackages.clang
+            pkgs.gdb
+            pkgs.ccache
+          ];
 
-            shellHook = ''
-              export CCACHE_DIR="$HOME/.cache/ccache/"
-              export CC="${ccache-gcc}/bin/gcc"
-              export CXX="${ccache-gxx}/bin/g++"
-              echo "--- C++ Development Environment ---"
-              echo "GCC version: $(gcc --version | head -n 1)"
-              echo "Clang version: $(clang --version | head -n 1)"
-              echo "CMake version: $(cmake --version | head -n 1)"
-              echo "GDB version: $(gdb --version | head -n 1)"
-              echo "CCache version: $(ccache --version | head -n 1)"
-            '';
-          };
-        });
+        shellHook = ''
+          export CC="ccache gcc"
+          export CXX="ccache g++"
+          export CCACHE_DIR="$HOME/.cache/ccache/"
+          echo "--- C++ Development Environment ---"
+          echo "GCC version: $(gcc --version | head -n 1)"
+          echo "Clang version: $(clang --version | head -n 1)"
+          echo "CMake version: $(cmake --version | head -n 1)"
+          echo "GDB version: $(gdb --version | head -n 1)"
+          echo "CCache version: $(ccache --version | head -n 1)"
+          '';
+        };
+      });
     };
 }
